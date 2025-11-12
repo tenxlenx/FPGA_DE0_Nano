@@ -1,39 +1,7 @@
-# constraints/de0nano_pins.qsf — Pin map for DE0‑Nano (Cyclone IV EP4CE22F17C6N)
-# Sources for pin mapping (LED[7:0], KEY[1:0], CLOCK_50):
-# - DE0‑Nano User Manual (Table 6‑1) for KEY[0], LED[3:0], CLOCK_50
-# - Community tutorials using DE0‑Nano that list the remaining pins (LED[7:4], KEY[1])
-#   Ensure 3.3‑V LVTTL for all user I/O.
+# constraints/de0nano_pins.qsf - Aggregate pin assignments for the project
+# This file now sources the reusable base map for LEDs, keys, and the 50 MHz clock.
 
-set_global_assignment -name FAMILY "Cyclone IV E"
-set_global_assignment -name DEVICE EP4CE22F17C6
+source constraints/de0nano_base_pins.qsf
 
-# Clock
-set_location_assignment PIN_R8  -to CLOCK_50
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLOCK_50
-
-# LEDs (active-high on board)
-set_location_assignment PIN_A15 -to LED[0]
-set_location_assignment PIN_A13 -to LED[1]
-set_location_assignment PIN_B13 -to LED[2]
-set_location_assignment PIN_A11 -to LED[3]
-set_location_assignment PIN_D1  -to LED[4]
-set_location_assignment PIN_F3  -to LED[5]
-set_location_assignment PIN_B1  -to LED[6]
-set_location_assignment PIN_L3  -to LED[7]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[2]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[3]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[4]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[5]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[6]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[7]
-
-# Push-buttons (active-low on board)
-set_location_assignment PIN_J15 -to KEY[0]
-set_location_assignment PIN_E1  -to KEY[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to KEY[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to KEY[1]
-
-# Optional: ensure top entity
-set_global_assignment -name TOP_LEVEL_ENTITY top
+# Extend with additional peripherals (ADC, accelerometer, GPIO, etc.) below.
+# Use english-only comments and stick to the canonical port names in rtl/de0nano_ports.sv.

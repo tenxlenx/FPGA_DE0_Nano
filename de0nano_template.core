@@ -6,8 +6,9 @@ description: "Minimal DE0-Nano template: 8 LEDs + 2 buttons + clock prewired"
 filesets:
   rtl:
     files:
-      - rtl/top.v
-    file_type: verilogSource
+      - rtl/de0nano_board_pkg.sv
+      - rtl/de0nano_ports.sv
+    file_type: systemVerilogSource
   qsf:
     files:
       - constraints/de0nano_pins.qsf
@@ -16,12 +17,12 @@ filesets:
 targets:
   default:
     filesets: [rtl, qsf]
-    toplevel: top
+    toplevel: de0nano_ports
 
   quartus:
     default_tool: quartus
     filesets: [rtl, qsf]
-    toplevel: top
+    toplevel: de0nano_ports
     tools:
       quartus:
         family: "Cyclone IV E"
