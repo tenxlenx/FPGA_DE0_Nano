@@ -1,5 +1,6 @@
 // de0nano_ports.sv - Board I/O wrapper for DE0-Nano.
 // Declares all canonical nets and instantiates reusable helper modules.
+// Keep this file slim so user logic can focus on the child modules.
 
 import de0nano_board_pkg::*;
 
@@ -32,6 +33,7 @@ module de0nano_ports
 );
 
   // Buttons are active-low; KEY[0] doubles as a freeze switch for the LED display.
+  // KEY[1] is left unused for user experiments.
   wire freeze_display = ~KEY[0];
 
   // Signed accelerometer samples provided by the ADXL reader.
@@ -41,6 +43,7 @@ module de0nano_ports
   // ------------------------------------------------------------------------
   // ADXL345 reader and LED mapper
   // ------------------------------------------------------------------------
+  // Raw accelerometer samples come from the dedicated reader.
   adxl345_reader #(
     .STARTUP_DELAY  (1_000_000),
     .SAMPLE_INTERVAL(250_000),
@@ -55,6 +58,7 @@ module de0nano_ports
     .accel_y (accel_y)
   );
 
+  // Map X/Y samples into the LED bus with adjustable sensitivity.
   tilt_led_mapper #(
     .TILT_SCALE_SHIFT(6)
   ) u_tilt_led_mapper (

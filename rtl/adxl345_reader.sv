@@ -1,4 +1,5 @@
 // adxl345_reader.sv - Self-contained 3-wire SPI reader for the DE0-Nano accelerometer.
+// Handles power-on sequencing, register programming, periodic sampling, and exposes signed X/Y data.
 
 module adxl345_reader #(
   parameter int unsigned STARTUP_DELAY   = 1_000_000, // 20 ms at 50 MHz
@@ -16,6 +17,7 @@ module adxl345_reader #(
 
   // ------------------------------------------------------------------------
   // ADXL345 register definitions
+  // (see datasheet Table 19, 20)
   // ------------------------------------------------------------------------
   localparam logic [7:0] REG_POWER_CTL   = 8'h2D;
   localparam logic [7:0] REG_DATA_FORMAT = 8'h31;
@@ -25,6 +27,7 @@ module adxl345_reader #(
 
   // ------------------------------------------------------------------------
   // Power-on reset
+  // Simple counter-based reset stretcher ensures synchronous init of internal logic.
   // ------------------------------------------------------------------------
   logic [15:0] por_counter = 16'd0;
   wire         rst         = ~por_counter[15];
@@ -35,6 +38,7 @@ module adxl345_reader #(
 
   // ------------------------------------------------------------------------
   // Shared SPI wiring (3-wire: MOSI/MISO share SDIO line)
+  // The SPI shifter is generic: launch bytes when spi_start pulses, optionally driving SDIO.
   // ------------------------------------------------------------------------
   logic        spi_start;
   logic [7:0]  spi_tx_data;
@@ -61,7 +65,7 @@ module adxl345_reader #(
   assign cs_n = g_sensor_cs_n_reg;
   assign sdat = sdio_drive ? sdio_out : 1'bz;
 
-  // Clock divider for the SPI engine
+  // Clock divider for the SPI engine (generates 100 kHz tick from 50 MHz fabric clock).
   always_ff @(posedge clk) begin
     if (rst) begin
       spi_divider_cnt <= 16'd0;
@@ -75,7 +79,7 @@ module adxl345_reader #(
     end
   end
 
-  // Track active transactions to prevent double launches
+  // Track active transactions to prevent double launches.
   always_ff @(posedge clk) begin
     if (rst) begin
       tx_pending <= 1'b0;
@@ -85,7 +89,7 @@ module adxl345_reader #(
     end
   end
 
-  // Serial shifter (SPI mode 3)
+  // Serial shifter (mode 3: idle high, sample on rising edges). Automatically tri-states SDIO when done.
   always_ff @(posedge clk) begin
     if (rst) begin
       spi_active    <= 1'b0;
@@ -132,6 +136,11 @@ module adxl345_reader #(
 
   // ------------------------------------------------------------------------
   // High-level accelerometer transaction controller
+  // Performs the following sequence:
+  //   * Wait for power-up delay
+  //   * Write POWER_CTL (start measurements) and DATA_FORMAT (full-res + 3-wire)
+  //   * Periodically issue multibyte reads for X/Y/Z (6 bytes)
+  //   * Update the exported accel_x/accel_y unless freeze is asserted
   // ------------------------------------------------------------------------
   typedef enum logic [3:0] {
     ST_BOOT_DELAY     = 4'd0,
