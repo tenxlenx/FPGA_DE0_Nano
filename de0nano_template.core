@@ -1,0 +1,28 @@
+CAPI=2:
+
+name: de0nano:template:ledkeys:0.2
+description: "Minimal DE0-Nano template: 8 LEDs + 2 buttons + clock prewired"
+
+filesets:
+  rtl:
+    files:
+      - rtl/top.v
+    file_type: verilogSource
+  qsf:
+    files:
+      - constraints/de0nano_pins.qsf
+    file_type: tclSource
+
+targets:
+  default:
+    filesets: [rtl, qsf]
+    toplevel: top
+
+  quartus:
+    default_tool: quartus
+    filesets: [rtl, qsf]
+    toplevel: top
+    tools:
+      quartus:
+        family: "Cyclone IV E"
+        device: "EP4CE22F17C6"
