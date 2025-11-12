@@ -105,6 +105,59 @@ Feel free to swap the LED logic with your own module—the ADXL samples (`accel_
 
 ---
 
+## Top-Level Ports
+The `de0nano_ports` wrapper mirrors the physical connectors on the DE0-Nano so other projects can drop in without renaming anything.
+
+| Port | Direction | Description |
+|------|-----------|-------------|
+| `CLOCK_50` | `input` | On-board 50 MHz oscillator driving the whole design. |
+| `KEY[1:0]` | `input` | Push-buttons (active-low). `KEY[0]` freezes the LED display; `KEY[1]` is spare. |
+| `LED[7:0]` | `output` | User LEDs. Low nibble shows X tilt, high nibble shows Y tilt. |
+| `I2C_SCLK`, `I2C_SDAT`, `G_SENSOR_CS_N`, `G_SENSOR_INT` | `output`, `inout`, `output`, `input` | Nets that reach the on-board ADXL345 accelerometer. The template only drives SCLK/SDAT/CS; INT is monitored but unused. |
+| `ADC_SCLK`, `ADC_SADDR`, `ADC_SDAT`, `ADC_CS_N` | `output`, `output`, `input`, `output` | Break-out for the ADC128S022 header. Tied off in this demo so downstream projects can repurpose them. |
+| `GPIO_0_IN[1:0]`, `GPIO_1_IN[1:0]` | `input` | Input-only pads on each GPIO header. |
+| `GPIO_0_IO[33:0]`, `GPIO_1_IO[33:0]` | `inout` | Bidirectional GPIO header pins; tri-stated here. |
+
+Use this file as a blueprint when integrating the helper modules into a larger system: connect your own logic to the exposed signals or swap out the LED mapper to drive other peripherals.
+
+---
+
+## Module Deep Dive
+
+### `adxl345_reader.sv`
+This module encapsulates everything needed to talk to the DE0-Nano’s ADXL345 over the three-wire SPI link.
+
+**Parameters**
+- `STARTUP_DELAY` — number of 50 MHz cycles to wait before touching the sensor (default 1 000 000 ≈ 20 ms).
+- `SAMPLE_INTERVAL` — gap between successive multi-byte reads (default 250 000 cycles ≈ 5 ms).
+- `SPI_DIVIDER` — divides `clk` down to the SPI bit rate (default 250 → 100 kHz in mode 3).
+
+**Ports**
+- `clk` — Fabric clock (tied to `CLOCK_50`).
+- `freeze` — When high, the most recent X/Y samples are held; sampling continues so new data is ready once freeze releases.
+- `sclk`, `sdat`, `cs_n` — Physical connections to the accelerometer (3-wire SPI). SDIO is tri-stated automatically when the FPGA is not actively driving.
+- `accel_x`, `accel_y` — Signed 16-bit outputs assembled from the DATAX/Y registers. `accel_z` is read internally (for completeness) but not surfaced.
+
+**Internal Flow**
+1. A reset-stretch counter (`por_counter`) keeps the module in reset long enough for synchronous init.
+2. The SPI core is entirely local: the divider generates a slow tick, `spi_start` kicks off byte transfers, and SDIO is shared for MOSI/MISO by toggling `sdio_drive`.
+3. After reset, an FSM walks through:
+   - `ST_BOOT_DELAY`: wait `STARTUP_DELAY`.
+   - `ST_WRITE_*`: send the `POWER_CTL` and `DATA_FORMAT` commands so the part enters measurement mode (full-resolution, ±2 g, 3-wire enabled).
+   - `ST_IDLE`: counts down `SAMPLE_INTERVAL`.
+   - `ST_READ_*`: issues `CMD_READ_DATAX0` plus six dummy bytes to fetch X0..Z1.
+   - `ST_UPDATE`: packs `{msb,lsb}` pairs into `accel_x/accel_y` unless `freeze` is asserted.
+4. The SPI engine is fully decoupled from the FSM: `spi_idle`, `spi_byte_done`, and `tx_pending` prevent collisions, while `sdio_drive` guarantees only one master drives the shared SDIO line at a time.
+
+Because everything is parameterized, you can repurpose `adxl345_reader` in other designs (change divider, sampling cadence, or expose Z) without touching the top-level.
+
+### `tilt_led_mapper.sv`
+- Accepts the signed samples from the reader.
+- Right-shifts each axis by `TILT_SCALE_SHIFT` (default 6) to turn raw counts into four coarse buckets.
+- Emits two one-hot nibbles, giving a “bubble level” style visualization on the eight LEDs. Lowering the shift value increases responsiveness; raising it dampens motion.
+
+---
+
 ## File Reference
 
 | Path | Purpose |
