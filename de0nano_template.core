@@ -12,16 +12,22 @@ filesets:
   qsf:
     files:
       - constraints/de0nano_pins.qsf
+      - constraints/de0nano_base_pins.qsf
+      - constraints/de0nano_peripherals_pins.qsf
     file_type: tclSource
+  timing:
+    files:
+      - timing.sdc
+    file_type: sdc
 
 targets:
   default:
-    filesets: [rtl, qsf]
+    filesets: [rtl, qsf, timing]
     toplevel: de0nano_ports
 
   quartus:
     default_tool: quartus
-    filesets: [rtl, qsf]
+    filesets: [rtl, qsf, timing]
     toplevel: de0nano_ports
     tools:
       quartus:

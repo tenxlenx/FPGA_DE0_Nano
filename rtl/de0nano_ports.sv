@@ -14,7 +14,7 @@ module de0nano_ports
 
   // ADXL345 3-wire SPI plus INT
   output wire               I2C_SCLK,    // SPI SCLK (shared label on PCB silk)
-  inout  wire               I2C_SDAT,    // bidirectional SDIO
+  input  wire               I2C_SDAT,    // bidirectional SDIO (treated as input here to match board pin capabilities)
   output wire               G_SENSOR_CS_N,
   input  wire               G_SENSOR_INT,
 
@@ -24,9 +24,11 @@ module de0nano_ports
   output wire               ADC_SADDR,   // MOSI to ADC
   output wire               ADC_CS_N,
 
-  // Expansion headers (direction depends on your design; keep as inout for flexibility)
-  inout  wire  [35:0]       GPIO_0,
-  inout  wire  [35:0]       GPIO_1
+  // Expansion headers (match board capabilities: two input-only pins + 34 bidirectional per header)
+  input  wire  [1:0]        GPIO_0_IN,  // GPIO_0_IN[0], GPIO_0_IN[1]
+  inout  wire  [33:0]       GPIO_0_IO,  // GPIO_00..GPIO_033
+  input  wire  [1:0]        GPIO_1_IN,  // GPIO_1_IN[0], GPIO_1_IN[1]
+  inout  wire  [33:0]       GPIO_1_IO   // GPIO_10..GPIO_133
 );
 
   // --------------------------------------------------------------------------
@@ -56,13 +58,16 @@ module de0nano_ports
 
   // Tri-state the bidirectional SDIO by default
   // synthesis translate_off
-  assign I2C_SDAT = 1'bz;
+  // kept as a no-op during simulation/build since the pin is treated as input in the top-level
   // synthesis translate_on
 
-  // Leave GPIOs floating until assigned in the user design
+  // Leave GPIO headers undriven until user logic connects
   // synthesis translate_off
-  assign GPIO_0 = {36{1'bz}};
-  assign GPIO_1 = {36{1'bz}};
+  // Intentional high-Z: consult the board manual for the input-only pins listed above
   // synthesis translate_on
+
+  // Default the bidirectional headers to high-Z so user logic can safely override
+  assign GPIO_0_IO = {34{1'bz}};
+  assign GPIO_1_IO = {34{1'bz}};
 
 endmodule

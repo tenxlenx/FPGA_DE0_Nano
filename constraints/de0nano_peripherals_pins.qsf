@@ -1,0 +1,180 @@
+# Peripheral pins for Terasic DE0-Nano (Cyclone IV EP4CE22F17C6)
+# Source: docs/DE0_Nano_User_Manual.pdf (Tables 3-6, 3-7, 3-9, 3-10).
+# Include this file after constraints/de0nano_base_pins.qsf to enable the peripheral nets.
+
+# ADXL345 accelerometer (3-wire SPI via I2C nets + chip select/int)
+set_location_assignment PIN_F2 -to I2C_SCLK
+set_location_assignment PIN_F1 -to I2C_SDAT
+set_location_assignment PIN_G5 -to G_SENSOR_CS_N
+set_location_assignment PIN_M2 -to G_SENSOR_INT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to I2C_SCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to I2C_SDAT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to G_SENSOR_CS_N
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to G_SENSOR_INT
+
+# ADC128S022 (2x13 header) SPI control/data pins
+set_location_assignment PIN_B14 -to ADC_SCLK
+set_location_assignment PIN_A9 -to ADC_SDAT
+set_location_assignment PIN_B10 -to ADC_SADDR
+set_location_assignment PIN_A10 -to ADC_CS_N
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_SCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_SDAT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_SADDR
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_CS_N
+
+# GPIO_0 40-pin header (Table 3-6)
+# Input-only pins
+set_location_assignment PIN_A8 -to GPIO_0_IN[0]
+set_location_assignment PIN_B8 -to GPIO_0_IN[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IN[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IN[1]
+
+# Bidirectional pins (GPIO_00..GPIO_033)
+set_location_assignment PIN_D3 -to GPIO_0_IO[0]
+set_location_assignment PIN_C3 -to GPIO_0_IO[1]
+set_location_assignment PIN_A2 -to GPIO_0_IO[2]
+set_location_assignment PIN_A3 -to GPIO_0_IO[3]
+set_location_assignment PIN_B3 -to GPIO_0_IO[4]
+set_location_assignment PIN_B4 -to GPIO_0_IO[5]
+set_location_assignment PIN_A4 -to GPIO_0_IO[6]
+set_location_assignment PIN_B5 -to GPIO_0_IO[7]
+set_location_assignment PIN_A5 -to GPIO_0_IO[8]
+set_location_assignment PIN_D5 -to GPIO_0_IO[9]
+set_location_assignment PIN_B6 -to GPIO_0_IO[10]
+set_location_assignment PIN_A6 -to GPIO_0_IO[11]
+set_location_assignment PIN_B7 -to GPIO_0_IO[12]
+set_location_assignment PIN_D6 -to GPIO_0_IO[13]
+set_location_assignment PIN_A7 -to GPIO_0_IO[14]
+set_location_assignment PIN_C6 -to GPIO_0_IO[15]
+set_location_assignment PIN_C8 -to GPIO_0_IO[16]
+set_location_assignment PIN_E6 -to GPIO_0_IO[17]
+set_location_assignment PIN_E7 -to GPIO_0_IO[18]
+set_location_assignment PIN_D8 -to GPIO_0_IO[19]
+set_location_assignment PIN_E8 -to GPIO_0_IO[20]
+set_location_assignment PIN_F8 -to GPIO_0_IO[21]
+set_location_assignment PIN_F9 -to GPIO_0_IO[22]
+set_location_assignment PIN_E9 -to GPIO_0_IO[23]
+set_location_assignment PIN_C9 -to GPIO_0_IO[24]
+set_location_assignment PIN_D9 -to GPIO_0_IO[25]
+set_location_assignment PIN_E11 -to GPIO_0_IO[26]
+set_location_assignment PIN_E10 -to GPIO_0_IO[27]
+set_location_assignment PIN_C11 -to GPIO_0_IO[28]
+set_location_assignment PIN_B11 -to GPIO_0_IO[29]
+set_location_assignment PIN_A12 -to GPIO_0_IO[30]
+set_location_assignment PIN_D11 -to GPIO_0_IO[31]
+set_location_assignment PIN_D12 -to GPIO_0_IO[32]
+set_location_assignment PIN_B12 -to GPIO_0_IO[33]
+
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[10]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[11]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[12]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[13]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[14]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[15]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[16]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[17]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[18]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[19]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[20]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[21]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[22]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[23]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[24]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[25]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[26]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[27]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[28]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[29]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[30]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[31]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[32]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_0_IO[33]
+
+# GPIO_1 40-pin header (Table 3-7)
+# Input-only pins
+set_location_assignment PIN_T9 -to GPIO_1_IN[0]
+set_location_assignment PIN_R9 -to GPIO_1_IN[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IN[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IN[1]
+
+# Bidirectional pins (GPIO_10..GPIO_133)
+set_location_assignment PIN_F13 -to GPIO_1_IO[0]
+set_location_assignment PIN_T15 -to GPIO_1_IO[1]
+set_location_assignment PIN_T14 -to GPIO_1_IO[2]
+set_location_assignment PIN_T13 -to GPIO_1_IO[3]
+set_location_assignment PIN_R13 -to GPIO_1_IO[4]
+set_location_assignment PIN_T12 -to GPIO_1_IO[5]
+set_location_assignment PIN_R12 -to GPIO_1_IO[6]
+set_location_assignment PIN_T11 -to GPIO_1_IO[7]
+set_location_assignment PIN_T10 -to GPIO_1_IO[8]
+set_location_assignment PIN_R11 -to GPIO_1_IO[9]
+set_location_assignment PIN_P11 -to GPIO_1_IO[10]
+set_location_assignment PIN_R10 -to GPIO_1_IO[11]
+set_location_assignment PIN_N12 -to GPIO_1_IO[12]
+set_location_assignment PIN_P9 -to GPIO_1_IO[13]
+set_location_assignment PIN_N9 -to GPIO_1_IO[14]
+set_location_assignment PIN_N11 -to GPIO_1_IO[15]
+set_location_assignment PIN_L16 -to GPIO_1_IO[16]
+set_location_assignment PIN_K16 -to GPIO_1_IO[17]
+set_location_assignment PIN_R16 -to GPIO_1_IO[18]
+set_location_assignment PIN_L15 -to GPIO_1_IO[19]
+set_location_assignment PIN_P15 -to GPIO_1_IO[20]
+set_location_assignment PIN_P16 -to GPIO_1_IO[21]
+set_location_assignment PIN_R14 -to GPIO_1_IO[22]
+set_location_assignment PIN_N16 -to GPIO_1_IO[23]
+set_location_assignment PIN_N15 -to GPIO_1_IO[24]
+set_location_assignment PIN_P14 -to GPIO_1_IO[25]
+set_location_assignment PIN_L14 -to GPIO_1_IO[26]
+set_location_assignment PIN_N14 -to GPIO_1_IO[27]
+set_location_assignment PIN_M10 -to GPIO_1_IO[28]
+set_location_assignment PIN_L13 -to GPIO_1_IO[29]
+set_location_assignment PIN_J16 -to GPIO_1_IO[30]
+set_location_assignment PIN_K15 -to GPIO_1_IO[31]
+set_location_assignment PIN_J13 -to GPIO_1_IO[32]
+set_location_assignment PIN_J14 -to GPIO_1_IO[33]
+
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[10]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[11]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[12]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[13]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[14]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[15]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[16]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[17]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[18]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[19]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[20]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[21]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[22]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[23]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[24]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[25]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[26]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[27]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[28]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[29]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[30]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[31]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[32]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO_1_IO[33]
+

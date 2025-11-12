@@ -25,7 +25,14 @@ set_location_assignment PIN_D1  -to LED[4]
 set_location_assignment PIN_F3  -to LED[5]
 set_location_assignment PIN_B1  -to LED[6]
 set_location_assignment PIN_L3  -to LED[7]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LED[0] LED[1] LED[2] LED[3] LED[4] LED[5] LED[6] LED[7]}
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[7]
 
 # Timing constraint (50 MHz)
 set_global_assignment -name SDC_FILE timing.sdc

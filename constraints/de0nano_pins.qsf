@@ -1,7 +1,9 @@
 # constraints/de0nano_pins.qsf - Aggregate pin assignments for the project
 # This file now sources the reusable base map for LEDs, keys, and the 50 MHz clock.
 
-source constraints/de0nano_base_pins.qsf
+set _de0nano_pin_dir [file dirname [info script]]
+source [file join $_de0nano_pin_dir de0nano_base_pins.qsf]
+source [file join $_de0nano_pin_dir de0nano_peripherals_pins.qsf]
 
 # Extend with additional peripherals (ADC, accelerometer, GPIO, etc.) below.
 # Use english-only comments and stick to the canonical port names in rtl/de0nano_ports.sv.

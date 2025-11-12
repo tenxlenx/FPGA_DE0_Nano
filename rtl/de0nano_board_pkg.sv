@@ -20,8 +20,12 @@ package de0nano_board_pkg;
   localparam int   ADC_CHANNELS        = 8;
 
   // GPIO headers (exposed edge connectors). Widths are conventional; pin mapping is done in QSF.
-  localparam int GPIO0_WIDTH        = 36;  // GPIO_0[35:0]
-  localparam int GPIO1_WIDTH        = 36;  // GPIO_1[35:0]
+  localparam int GPIO0_WIDTH        = 36;  // Total pins on GPIO_0 header
+  localparam int GPIO1_WIDTH        = 36;  // Total pins on GPIO_1 header
+  localparam int GPIO0_INPUT_WIDTH  = 2;   // GPIO_0_IN[1:0]
+  localparam int GPIO1_INPUT_WIDTH  = 2;   // GPIO_1_IN[1:0]
+  localparam int GPIO0_IO_WIDTH     = 34;  // GPIO_00..GPIO_033
+  localparam int GPIO1_IO_WIDTH     = 34;  // GPIO_10..GPIO_133
 
   // Canonical logical port names to use at the top level (referenced by QSF)
   localparam string PIN_CLOCK_50     = "CLOCK_50";
@@ -41,6 +45,8 @@ package de0nano_board_pkg;
   localparam string PIN_ADC_CS_N     = "ADC_CS_N";       // chip select
 
   // GPIO headers
-  localparam string PIN_GPIO0_BUS    = "GPIO_0";         // [35:0]
-  localparam string PIN_GPIO1_BUS    = "GPIO_1";         // [35:0]
+  localparam string PIN_GPIO0_IN_BUS  = "GPIO_0_IN";      // [1:0]
+  localparam string PIN_GPIO0_IO_BUS  = "GPIO_0_IO";      // [33:0]
+  localparam string PIN_GPIO1_IN_BUS  = "GPIO_1_IN";      // [1:0]
+  localparam string PIN_GPIO1_IO_BUS  = "GPIO_1_IO";      // [33:0]
 endpackage
