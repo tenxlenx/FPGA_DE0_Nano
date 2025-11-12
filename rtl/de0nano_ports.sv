@@ -1,5 +1,5 @@
 // de0nano_ports.sv - Board I/O wrapper for DE0-Nano.
-// Declare all common nets once and keep your core logic in a child module for reuse.
+// Declares all canonical nets and instantiates reusable helper modules.
 
 import de0nano_board_pkg::*;
 
@@ -14,7 +14,7 @@ module de0nano_ports
 
   // ADXL345 3-wire SPI plus INT
   output wire               I2C_SCLK,    // SPI SCLK (shared label on PCB silk)
-  input  wire               I2C_SDAT,    // bidirectional SDIO (treated as input here to match board pin capabilities)
+  inout  wire               I2C_SDAT,    // bidirectional SDIO, actively driven only while writing
   output wire               G_SENSOR_CS_N,
   input  wire               G_SENSOR_INT,
 
@@ -24,50 +24,58 @@ module de0nano_ports
   output wire               ADC_SADDR,   // MOSI to ADC
   output wire               ADC_CS_N,
 
-  // Expansion headers (match board capabilities: two input-only pins + 34 bidirectional per header)
+  // Expansion headers (match board capabilities)
   input  wire  [1:0]        GPIO_0_IN,  // GPIO_0_IN[0], GPIO_0_IN[1]
   inout  wire  [33:0]       GPIO_0_IO,  // GPIO_00..GPIO_033
   input  wire  [1:0]        GPIO_1_IN,  // GPIO_1_IN[0], GPIO_1_IN[1]
   inout  wire  [33:0]       GPIO_1_IO   // GPIO_10..GPIO_133
 );
 
-  // --------------------------------------------------------------------------
-  // Example: minimal heartbeat plus button mirror (replace with your design)
-  // --------------------------------------------------------------------------
-  reg [25:0] hb = 26'd0;
-  always @(posedge CLOCK_50) hb <= hb + 1'b1;
+  // Buttons are active-low; KEY[0] doubles as a freeze switch for the LED display.
+  wire freeze_display = ~KEY[0];
 
-  // Buttons are active-low; invert for logic 1 when pressed
-  wire [1:0] key_pressed = ~KEY;
+  // Signed accelerometer samples provided by the ADXL reader.
+  wire signed [15:0] accel_x;
+  wire signed [15:0] accel_y;
 
-  // Demo LEDs: [1:0] mirror buttons, [7:2] show a slow counter
-  assign LED[1:0] = key_pressed;
-  assign LED[2]   = hb[24];
-  assign LED[3]   = hb[23];
-  assign LED[4]   = hb[22];
-  assign LED[5]   = hb[21];
-  assign LED[6]   = hb[20];
-  assign LED[7]   = hb[19];
+  // ------------------------------------------------------------------------
+  // ADXL345 reader and LED mapper
+  // ------------------------------------------------------------------------
+  adxl345_reader #(
+    .STARTUP_DELAY  (1_000_000),
+    .SAMPLE_INTERVAL(250_000),
+    .SPI_DIVIDER    (250)
+  ) u_adxl345_reader (
+    .clk     (CLOCK_50),
+    .freeze  (freeze_display),
+    .sclk    (I2C_SCLK),
+    .sdat    (I2C_SDAT),
+    .cs_n    (G_SENSOR_CS_N),
+    .accel_x (accel_x),
+    .accel_y (accel_y)
+  );
 
-  // Stub peripherals (tie off until real logic is connected)
-  assign I2C_SCLK      = 1'b1;   // idle high for SPI mode 3
-  assign G_SENSOR_CS_N = 1'b1;   // inactive
-  assign ADC_SCLK      = 1'b0;
-  assign ADC_SADDR     = 1'b0;
-  assign ADC_CS_N      = 1'b1;
+  tilt_led_mapper #(
+    .TILT_SCALE_SHIFT(6)
+  ) u_tilt_led_mapper (
+    .accel_x(accel_x),
+    .accel_y(accel_y),
+    .led    (LED)
+  );
 
-  // Tri-state the bidirectional SDIO by default
-  // synthesis translate_off
-  // kept as a no-op during simulation/build since the pin is treated as input in the top-level
-  // synthesis translate_on
+  // ------------------------------------------------------------------------
+  // Default peripheral behaviour
+  // ------------------------------------------------------------------------
+  assign ADC_SCLK  = 1'b0;
+  assign ADC_SADDR = 1'b0;
+  assign ADC_CS_N  = 1'b1;
 
-  // Leave GPIO headers undriven until user logic connects
-  // synthesis translate_off
-  // Intentional high-Z: consult the board manual for the input-only pins listed above
-  // synthesis translate_on
-
-  // Default the bidirectional headers to high-Z so user logic can safely override
+  // Leave the expansion headers undriven until user logic connects.
   assign GPIO_0_IO = {34{1'bz}};
   assign GPIO_1_IO = {34{1'bz}};
+
+  // Prevent unused input warnings.
+  wire _unused_gsensor_int = G_SENSOR_INT;
+  wire _unused_key1        = KEY[1];
 
 endmodule

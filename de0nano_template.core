@@ -7,6 +7,8 @@ filesets:
   rtl:
     files:
       - rtl/de0nano_board_pkg.sv
+      - rtl/adxl345_reader.sv
+      - rtl/tilt_led_mapper.sv
       - rtl/de0nano_ports.sv
     file_type: systemVerilogSource
   qsf:
