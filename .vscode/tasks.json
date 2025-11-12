@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build (Quartus via FuseSoC)",
+      "type": "shell",
+      "command": "fusesoc run --target=quartus de0nano:template:ledkeys:0.2",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Program (.sof via quartus_pgm)",
+      "type": "shell",
+      "command": "quartus_pgm --mode=jtag -o \"p;build/de0nano_template_quartus/de0nano_ports.sof\"",
+      "problemMatcher": []
+    }
+  ]
+}
